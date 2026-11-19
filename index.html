@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#091724">
-<meta name="application-name" content="Círculo de Mohr · Secciones v3">
+<meta name="application-name" content="Círculo de Mohr · Secciones v4">
 <title>Círculo de Mohr · Inercias de secciones — Francisco Goitia</title>
 <style>
 :root{--bg:#091724;--panel:#112638;--panel2:#0c2132;--muted:#a8c2d3;--text:#e8f5fa;--border:#2c4e62;--teal:#69e0cc;--blue:#65c6f0;--gold:#ffc568;--purple:#d6a7ff;--orange:#ff967a;--grid:rgba(108,157,180,.14)}
@@ -60,6 +60,12 @@
 @media(max-width:850px){.workspace{grid-template-columns:1fr}.section-plot canvas{height:420px}.geometry-data #dimensions{grid-template-columns:repeat(2,minmax(0,1fr))}.mohr-plot{height:420px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.geometry-panel,.mohr-panel{padding:13px}.section-selector button{font-size:11px}.section-plot canvas{height:345px}.section-plot .canvas-buttons{top:6px;right:6px}.section-plot .canvas-buttons button{font-size:10px;padding:5px 7px}.angle-pair{gap:8px}.section-plot .orientation-box{padding:8px 9px}.geometry-data{padding:11px}.mohr-plot{height:375px}.mohr-panel .chart-head{min-height:76px}}
 @media(max-width:370px){.angle-pair{grid-template-columns:1fr}.geometry-data #dimensions{grid-template-columns:1fr}.section-plot canvas{height:310px}}
+/* V4: lectura directa de X e Y y valores principales al lado del círculo */
+.principal-readout{position:absolute;z-index:2;top:48px;right:11px;width:151px;min-height:91px;padding:9px 10px;border:1px solid #6f9a9a88;border-radius:9px;background:rgba(8,27,41,.94);box-shadow:0 2px 14px #071723aa;pointer-events:none;font-variant-numeric:tabular-nums}
+.principal-readout-title{font-size:9px;letter-spacing:.075em;color:#95c5d6;font-weight:800;margin:0 0 4px}
+.principal-readout-line{display:flex;justify-content:space-between;align-items:baseline;gap:5px;font-size:11px;line-height:1.5}.principal-readout-line span{color:#ffd18b;white-space:nowrap}.principal-readout-line strong{font-size:11px;font-weight:750;color:#e7f7fd;max-width:108px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.principal-readout small{display:block;text-align:right;color:#97b9c9;font-size:9px;margin-top:2px}
+@media(max-width:420px){.principal-readout{right:7px;width:132px;padding:7px 8px}.principal-readout-line strong{font-size:10px}}
 </style>
 </head>
 <body>
@@ -77,13 +83,13 @@
       <div class="geometry-panel-head"><div><h2 id="geometryTitle">Geometría de la sección</h2><p class="hint">Modifica las dimensiones y gira los ejes o la sección directamente sobre el dibujo.</p></div><span class="chip" id="sectionChip">Rectángulo</span></div>
       <div class="segmented section-selector"><button id="rectBtn" type="button" class="active">▭ Rectangular</button><button id="ibeamBtn" type="button">Ⅰ Doble T</button></div>
       <div class="plot section-plot" aria-label="Dibujo de la sección y controles de orientación">
-          <div class="orientation-box">
-              <div class="orientation-title"><h3>Orientación</h3><button class="reset-btn" id="resetAngles" type="button">↺ Restablecer</button></div>
-              <div class="angle-pair">
-                <div class="orientation"><div class="orient-head"><label for="axisAngle">Giro de ejes <b>α</b></label><input id="axisNumber" type="number" min="-180" max="180" step="1" value="25" aria-label="Ángulo de ejes en grados"></div><input id="axisAngle" aria-label="Giro de ejes" type="range" min="-180" max="180" step="1" value="25"><div class="fine">Antihorario positivo</div></div>
-                <div class="orientation"><div class="orient-head"><label for="shapeAngle">Giro de sección <b>φ</b></label><input id="shapeNumber" type="number" min="-180" max="180" step="1" value="0" aria-label="Ángulo de sección en grados"></div><input id="shapeAngle" aria-label="Giro de sección" type="range" min="-180" max="180" step="1" value="0"><div class="fine">Rotación de la figura</div></div>
-              </div>
-            </div>
+        <div class="orientation-box">
+          <div class="orientation-title"><h3>Orientación</h3><button class="reset-btn" id="resetAngles" type="button">↺ Restablecer</button></div>
+          <div class="angle-pair">
+            <div class="orientation"><div class="orient-head"><label for="axisAngle">Giro de ejes <b>α</b></label><input id="axisNumber" type="number" min="-180" max="180" step="1" value="25" aria-label="Ángulo de ejes en grados"></div><input id="axisAngle" aria-label="Giro de ejes" type="range" min="-180" max="180" step="1" value="25"><div class="fine">Antihorario positivo</div></div>
+            <div class="orientation"><div class="orient-head"><label for="shapeAngle">Giro de sección <b>φ</b></label><input id="shapeNumber" type="number" min="-180" max="180" step="1" value="0" aria-label="Ángulo de sección en grados"></div><input id="shapeAngle" aria-label="Giro de sección" type="range" min="-180" max="180" step="1" value="0"><div class="fine">Rotación de la figura</div></div>
+          </div>
+        </div>
         <div class="canvas-surface"><div class="canvas-buttons"><button type="button" class="active" data-drag="axes">↗ Girar ejes</button><button type="button" data-drag="shape">⟳ Girar sección</button></div><canvas id="sectionCanvas" aria-label="Representación interactiva de la sección y sus ejes"></canvas><div class="canvas-note" id="dragHelp">Arrastra sobre el dibujo para girar los ejes x′ · y′.</div></div>
       </div>
       <div class="legend geometry-legend"><span><i class="dot" style="background:var(--blue)"></i> Ejes x′, y′</span><span><i class="dot" style="background:var(--gold)"></i> Ejes locales</span><span><i class="dot" style="background:var(--teal)"></i> Sección</span></div>
@@ -97,7 +103,7 @@
     </section>
     <section class="panel chart-card mohr-panel" aria-labelledby="mohrTitle">
       <div class="chart-head"><div><h2 id="mohrTitle">Círculo de Mohr de inercias</h2><p>Los puntos cambian al girar los ejes o la figura; el círculo cambia al modificar las dimensiones.</p></div><span class="chip" id="mohrChip">I<sub>xy</sub> ↑ positivo</span></div>
-      <div class="plot mohr-plot"><canvas id="mohrCanvas" aria-label="Círculo de Mohr de momentos de inercia"></canvas><div class="canvas-note" id="mohrHint">Al girar ejes o sección, los puntos se desplazan sobre el mismo círculo.</div></div>
+      <div class="plot mohr-plot"><canvas id="mohrCanvas" aria-label="Círculo de Mohr con coordenadas I e Ixy junto a los puntos X e Y"></canvas><div class="principal-readout" aria-label="Momentos principales de inercia"><div class="principal-readout-title">INERCIAS PRINCIPALES</div><div class="principal-readout-line"><span>I<sub>máx</sub></span><strong id="mohrMax">—</strong></div><div class="principal-readout-line"><span>I<sub>mín</sub></span><strong id="mohrMin">—</strong></div><small id="mohrUnit">cm⁴</small></div><div class="canvas-note" id="mohrHint">X e Y: coordenadas (I, Ixy) en los ejes seleccionados.</div></div>
       <div class="legend"><span><i class="dot" style="background:var(--blue)"></i> (I<sub>x′</sub>, I<sub>x′y′</sub>)</span><span><i class="dot" style="background:var(--orange)"></i> (I<sub>y′</sub>, −I<sub>x′y′</sub>)</span><span><i class="dot" style="background:var(--gold)"></i> Inercias principales</span></div>
       <p class="hint mohr-caption">El giro relativo de los ejes, θ = α − φ, se representa mediante un giro de 2θ en el círculo de Mohr.</p>
     </section>
@@ -167,6 +173,7 @@
   document.querySelectorAll('[data-drag]').forEach(b=>b.onclick=()=>{s.drag=b.dataset.drag;document.querySelectorAll('[data-drag]').forEach(x=>x.classList.toggle('active',x===b));$('dragHelp').textContent=s.drag==='axes'?'Arrastra sobre el dibujo para girar los ejes x′ · y′.':'Arrastra sobre el dibujo para girar físicamente la sección.';drawSection(properties())});
   function update(){const p=properties();$('statIx').textContent=fVal(p.Ixp);$('statIy').textContent=fVal(p.Iyp);$('statIxy').textContent=fVal(p.Ixyp);$('statTheta').textContent=fmt(s.alpha-s.phi,1);['unitIx','unitIy','unitIxy'].forEach(id=>$(id).textContent=fmUnit());
     const set=(id,t)=>$(id).textContent=t;
+    set('mohrMax',fVal(p.Imax));set('mohrMin',fVal(p.Imin));set('mohrUnit',fmUnit());
     set('outArea',fmt(p.A/100,2)+' cm²');set('outLocalIx',fFull(p.Ix));set('outLocalIy',fFull(p.Iy));set('outImax',fFull(p.Imax));set('outImin',fFull(p.Imin));set('outIp',fFull(p.Ix+p.Iy));set('outCenter',fFull(p.C));set('outRadius',fFull(p.R));set('outTheta',fmt(s.alpha-s.phi,1)+'°');set('out2Theta',fmt(2*(s.alpha-s.phi),1)+'°');set('outProduct',fFull(p.Ixyp));set('outRx',fmt(Math.sqrt(p.Ixp/p.A)/10,3)+' cm');set('outRy',fmt(Math.sqrt(p.Iyp/p.A)/10,3)+' cm');drawSection(p);drawMohr(p);
   }
   function frame(canvas){const rect=canvas.getBoundingClientRect(),w=Math.max(1,rect.width),h=Math.max(1,rect.height),dpr=Math.min(devicePixelRatio||1,2);if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr)}const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);return{ctx,w,h}}
@@ -205,6 +212,49 @@
     // Angular readouts
     text(ctx,'α = '+fmt(s.alpha,1)+'°',13,22,'#7dd6fb',12,'left','700');text(ctx,'φ = '+fmt(s.phi,1)+'°',13,42,'#ffd18b',12,'left','700');
   }
+  function mohrPointLabels(ctx,w,h,cx,cy,radius,pts){
+    const boxW=w<390?126:142, boxH=59, inset=9;
+    const forbidden={x:w-163,y:48,w:151,h:91}; // Recuadro de inercias principales
+    const overlap=(a,b,gap=5)=>!(a.x+a.w+gap<=b.x||b.x+b.w+gap<=a.x||a.y+a.h+gap<=b.y||b.y+b.h+gap<=a.y);
+    const placed=[];
+    const signed=v=>(v>1e-9?'+':'')+fVal(v);
+    pts.forEach((q,index)=>{
+      const o=16,opts=[
+        {x:q.x+o,y:q.y-boxH/2}, {x:q.x-o-boxW,y:q.y-boxH/2},
+        {x:q.x-boxW/2,y:q.y-o-boxH}, {x:q.x-boxW/2,y:q.y+o},
+        {x:q.x+(index?o:-o-boxW),y:q.y+(index?o:-o-boxH)}
+      ];
+      const pointInside=b=>pts.some(pt=>pt.x>b.x-8&&pt.x<b.x+b.w+8&&pt.y>b.y-8&&pt.y<b.y+b.h+8);
+      let best=null,bestScore=Infinity;
+      for(let j=0;j<opts.length;j++){
+        const target=opts[j];
+        const b={x:Math.max(inset,Math.min(w-boxW-inset,target.x)),y:Math.max(50,Math.min(h-boxH-43,target.y)),w:boxW,h:boxH};
+        const midX=b.x+b.w/2,midY=b.y+b.h/2;
+        let score=Math.hypot(midX-q.x,midY-q.y)*.15+j*3;
+        if(pointInside(b))score+=10000;
+        if(overlap(b,forbidden))score+=10000;
+        if(placed.some(z=>overlap(b,z)))score+=10000;
+        // Preferir etiquetas próximas al borde frente a las que tapan el círculo.
+        if(radius>0&&Math.hypot(midX-cx,midY-cy)<radius*.72)score+=80;
+        if(score<bestScore){best=b;bestScore=score}
+      }
+      placed.push(best);
+      const bx=Math.max(best.x,Math.min(best.x+best.w,q.x));
+      const by=Math.max(best.y,Math.min(best.y+best.h,q.y));
+      line(ctx,q.x,q.y,bx,by,q.color,1.1,[3,3]);
+      ctx.beginPath();ctx.roundRect(best.x,best.y,best.w,best.h,7);
+      ctx.fillStyle='rgba(10,29,43,.96)';ctx.fill();ctx.strokeStyle=q.color;ctx.lineWidth=1;ctx.stroke();
+      text(ctx,q.tag+' · '+fmUnit(),best.x+9,best.y+12,q.color,10,'left','800');
+      const drawValue=(label,val,yy)=>{
+        const str=label+' = '+(label==='Ixy'?signed(val):fVal(val));
+        let size=11;ctx.font='600 '+size+'px Inter,system-ui,Arial,sans-serif';
+        while(ctx.measureText(str).width>best.w-16 && size>8){size-=.5;ctx.font='600 '+size+'px Inter,system-ui,Arial,sans-serif'}
+        text(ctx,str,best.x+9,yy,'#e2f2f8',size,'left','600');
+      };
+      drawValue('I',q.i,best.y+31);
+      drawValue('Ixy',q.xy,best.y+47);
+    });
+  }
   function drawMohr(p){const {ctx,w,h}=frame($('mohrCanvas'));const cx=w/2,cy=h/2+9;let radius=Math.max(0,Math.min((w-126)/2,(h-112)/2));radius=Math.min(radius,167);const R=p.R,nondeg=R>1e-9;const px=(v)=>cx+(v-p.C)/(nondeg?R:1)*radius,py=(v)=>cy-v/(nondeg?R:1)*radius;
     for(let i=-6;i<=6;i++){const dx=i*35,dy=i*35;line(ctx,cx+dx,0,cx+dx,h,'rgba(118,175,193,.07)');line(ctx,0,cy+dy,w,cy+dy,'rgba(118,175,193,.07)')}
     arrow(ctx,Math.max(16,cx-radius-33),cy,Math.min(w-18,cx+radius+43),cy,'#91aec0',1.5);arrow(ctx,cx,Math.min(h-18,cy+radius+34),cx,Math.max(20,cy-radius-39),'#91aec0',1.5);
@@ -217,11 +267,17 @@
       // principal points & labels
       const Xmax=px(p.Imax),Xmin=px(p.Imin);
       [[Xmax,'Imáx'],[Xmin,'Imín']].forEach(([x,label])=>{ctx.beginPath();ctx.arc(x,cy,4.3,0,PI*2);ctx.fillStyle='#ffc568';ctx.fill();text(ctx,label,x,cy+22,'#ffd18b',11,'center','700')});
-      // Selected axis points
-      function point(x,y,color,label,dx,dy){ctx.beginPath();ctx.arc(x,y,7,0,PI*2);ctx.fillStyle=color;ctx.fill();ctx.strokeStyle='#12283a';ctx.lineWidth=2;ctx.stroke();text(ctx,label,x+dx,y+dy,color,12,'center','800')}
-      point(px(p.Ixp),py(p.Ixyp),'#69c9f4','X',0,p.Ixyp>=0?-20:22);
-      point(px(p.Iyp),py(-p.Ixyp),'#ff967a','Y',0,p.Ixyp<=0?-20:22);
-    }else{ctx.beginPath();ctx.arc(cx,cy,7,0,2*PI);ctx.fillStyle='#ffc568';ctx.fill();text(ctx,'Imáx = Imín',cx,cy+27,'#ffd08a',13,'center','700')}
+      // Puntos X e Y: coordenadas (I, Ixy) de los ejes girados.
+      // Ambos quedan en extremos opuestos del diámetro, con Ixy de Y = -Ixy de X.
+      const pts=[{x:px(p.Ixp),y:py(p.Ixyp),tag:'X',color:'#69c9f4',i:p.Ixp,xy:p.Ixyp},
+                 {x:px(p.Iyp),y:py(-p.Ixyp),tag:'Y',color:'#ff967a',i:p.Iyp,xy:-p.Ixyp}];
+      pts.forEach(q=>{ctx.beginPath();ctx.arc(q.x,q.y,7,0,PI*2);ctx.fillStyle=q.color;ctx.fill();ctx.strokeStyle='#12283a';ctx.lineWidth=2;ctx.stroke()});
+      mohrPointLabels(ctx,w,h,cx,cy,radius,pts);
+    }else{
+      ctx.beginPath();ctx.arc(cx,cy,7,0,2*PI);ctx.fillStyle='#ffc568';ctx.fill();
+      text(ctx,'Imáx = Imín',cx,cy+108,'#ffd08a',12,'center','700');
+      mohrPointLabels(ctx,w,h,cx,cy,0,[{x:cx,y:cy,tag:'X',color:'#69c9f4',i:p.Ixp,xy:0},{x:cx,y:cy,tag:'Y',color:'#ff967a',i:p.Iyp,xy:0}]);
+    }
     ctx.beginPath();ctx.arc(cx,cy,3.7,0,PI*2);ctx.fillStyle='#e1f4fe';ctx.fill();
     text(ctx,'C = '+fVal(p.C)+' '+fmUnit(),cx,Math.min(h-34,cy+radius+39),'#bfd8e5',11,'center','600');
     text(ctx,'R = '+fVal(p.R)+' '+fmUnit(),12,23,'#8ee6d6',11,'left','700');
