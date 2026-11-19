@@ -13,3 +13,13 @@ Abre `index.html` con Chrome o Edge. No necesita instalación ni dependencias ex
 En **Settings → Pages** selecciona **Deploy from a branch**, rama **main** y carpeta **/(root)**. La URL esperada será https://fragoi95.github.io/circulo_mohr_inercias/. La publicación puede tardar un poco después de activar Pages.
 
 Convención de productos de inercia: `Ixy = ∫ xy dA`, positivo hacia arriba en el círculo. Se utilizan secciones doblemente simétricas, homogéneas, sin redondeos en el perfil doble T.
+
+## Lecturas incorporadas en v4
+
+Los puntos del círculo muestran sus coordenadas en las unidades seleccionadas:
+
+- **X (azul):** \(I_{x'}, I_{x'y'}\).
+- **Y (rojo):** \(I_{y'}, -I_{x'y'}\).
+- **Inercias principales:** recuadro lateral con \(I_{máx}\) e \(I_{mín}\), invariantes bajo el giro de ejes o de la sección.
+
+Las lecturas se actualizan al modificar las dimensiones, los ángulos o las unidades.
